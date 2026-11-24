@@ -1,0 +1,1141 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pizarra Digital - Ciencias Sociales Unidad 1 (4o. HS) | Colegio Montano</title>
+    <!-- Carga de Tailwind CSS para utilidades responsivas y estructura -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Variables de Identidad Visual - Colegio Montano */
+        :root {
+            --azul-principal: #1269A8;
+            --amarillo-brillante: #F7D615;
+            --verde-grisaceo: #54887D;
+            --azul-claro: #88B5C7;
+            --verde-oliva: #A6B046;
+            --blanco-suave: #F2F5E9;
+            --texto-oscuro: #1e293b;
+        }
+
+        /* Tipografía Institucional */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #e2e8f0;
+            color: var(--texto-oscuro);
+            margin: 0;
+            padding: 12px;
+        }
+
+        /* Marco de Pizarra Digital */
+        .pizarra-frame {
+            background-color: var(--blanco-suave);
+            border: 5px solid var(--amarillo-brillante);
+            border-radius: 12px;
+            box-shadow: 0 12px 30px rgba(18, 105, 168, 0.25);
+            overflow: hidden;
+            max-width: 1280px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            min-height: 90vh;
+            transition: all 0.3s ease;
+        }
+
+        /* Ajuste en Modo Pantalla Completa */
+        :fullscreen .pizarra-frame {
+            max-width: 100%;
+            height: 100vh;
+            border-radius: 0;
+            border-width: 4px;
+        }
+
+        /* Encabezado de la Pizarra */
+        .pizarra-header {
+            background: linear-gradient(135deg, var(--azul-principal) 0%, #0d4f80 100%);
+            color: white;
+            border-bottom: 4px solid var(--amarillo-brillante);
+        }
+
+        /* Botón Pantalla Completa */
+        .btn-fullscreen {
+            background-color: var(--amarillo-brillante);
+            color: var(--azul-principal);
+            font-weight: 700;
+            border-radius: 8px;
+            transition: transform 0.2s, box-shadow 0.2s;
+            cursor: pointer;
+        }
+
+        .btn-fullscreen:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            background-color: #ffe02e;
+        }
+
+        /* Navegación de Pestañas Horizontales */
+        .nav-tabs {
+            background-color: #ffffff;
+            border-bottom: 2px solid var(--azul-claro);
+            display: flex;
+            overflow-x: auto;
+            scrollbar-width: thin;
+        }
+
+        .tab-btn {
+            padding: 14px 18px;
+            font-weight: 700;
+            color: var(--verde-grisaceo);
+            border-bottom: 4px solid transparent;
+            white-space: nowrap;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tab-btn:hover {
+            background-color: var(--blanco-suave);
+            color: var(--azul-principal);
+        }
+
+        .tab-btn.active {
+            background-color: var(--azul-principal);
+            color: #ffffff;
+            border-bottom: 4px solid var(--amarillo-brillante);
+        }
+
+        /* Tarjetas y Contenedores Pedagógicos */
+        .card-montano {
+            background-color: #ffffff;
+            border-left: 5px solid var(--verde-grisaceo);
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s ease;
+        }
+
+        .card-montano:hover {
+            transform: translateY(-2px);
+        }
+
+        .card-ejercicio {
+            background-color: rgba(136, 181, 199, 0.22);
+            border: 1px solid var(--azul-claro);
+            border-radius: 10px;
+        }
+
+        /* Etiquetas de Nivel y Categoría */
+        .badge-oliva {
+            background-color: var(--verde-oliva);
+            color: #ffffff;
+            font-weight: 700;
+            padding: 3px 10px;
+            border-radius: 9999px;
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .badge-azul {
+            background-color: var(--azul-principal);
+            color: #ffffff;
+            font-weight: 700;
+            padding: 3px 10px;
+            border-radius: 9999px;
+            font-size: 0.78rem;
+        }
+
+        .badge-amarillo {
+            background-color: var(--amarillo-brillante);
+            color: var(--azul-principal);
+            font-weight: 800;
+            padding: 3px 10px;
+            border-radius: 9999px;
+            font-size: 0.8rem;
+        }
+
+        /* Botón Mostrar / Ocultar Solución */
+        .btn-solucion {
+            background-color: var(--azul-principal);
+            color: white;
+            font-weight: 600;
+            padding: 8px 16px;
+            border-radius: 8px;
+            transition: background-color 0.2s;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-solucion:hover {
+            background-color: var(--verde-grisaceo);
+        }
+
+        .caja-solucion {
+            background-color: #ffffff;
+            border-left: 4px solid var(--verde-oliva);
+            border-radius: 8px;
+            margin-top: 12px;
+            padding: 14px;
+            display: none;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        .caja-solucion.visible {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Animación de secciones */
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.35s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- MARCO PRINCIPAL DE PIZARRA DIGITAL -->
+    <div id="pizarra" class="pizarra-frame">
+        
+        <!-- ENCABEZADO INSTITUCIONAL -->
+        <header class="pizarra-header p-4 md:p-6">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                <!-- Logo y Títulos -->
+                <div class="flex items-center gap-4">
+                    <div class="bg-white p-2 rounded-xl shadow-md shrink-0">
+                        <img 
+                            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQyEop0yf6lZ7Jk9MILZxF1rBj4Oqs5esyhIQ&s" 
+                            alt="Logo Colegio Montano" 
+                            class="h-14 w-14 md:h-16 md:w-16 object-contain"
+                            onerror="this.src='https://placehold.co/80x80/1269A8/F7D615?text=CM'"
+                        >
+                    </div>
+                    <div>
+                        <div class="flex flex-wrap items-center gap-2 mb-1">
+                            <span class="badge-amarillo">COLEGIO MONTANO</span>
+                            <span class="text-xs md:text-sm font-semibold text-blue-100 bg-white/10 px-2.5 py-0.5 rounded-full">
+                                📅 18 de Enero al 5 de Marzo (7 Semanas)
+                            </span>
+                        </div>
+                        <h1 class="text-xl md:text-2xl lg:text-3xl font-bold tracking-tight text-white">
+                            Ciencias Sociales: La Ciencia y Técnicas de Investigación — Unidad 1
+                        </h1>
+                        <p class="text-sm md:text-base text-blue-100 mt-0.5">
+                            <strong>Grado:</strong> 4o. HS (Cuarto Bachillerato) &nbsp;|&nbsp; <strong>Docente:</strong> Stephany Godoy &nbsp;|&nbsp; <strong>Zona Total:</strong> 100 Pts (4 Módulos × 25 Pts)
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Botón Pantalla Completa -->
+                <button id="btnFullscreen" onclick="toggleFullscreen()" class="btn-fullscreen px-4 py-2.5 text-sm md:text-base self-end md:self-center shrink-0 flex items-center gap-2">
+                    <span id="fsIcon">⛶</span>
+                    <span id="fsText">Pantalla completa</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- MENÚ DE PESTAÑAS HORIZONTALES INTERACTIVAS -->
+        <nav class="nav-tabs" role="tablist">
+            <button class="tab-btn active" onclick="openTab(event, 'teoria')">
+                <span>🌍</span> Teoría y Dosificación (4 Módulos)
+            </button>
+            <button class="tab-btn" onclick="openTab(event, 'ejemplos')">
+                <span>💡</span> Ejemplos Resueltos (15)
+            </button>
+            <button class="tab-btn" onclick="openTab(event, 'ejercicios')">
+                <span>✍️</span> Ejercicios Prácticos (15)
+            </button>
+            <button class="tab-btn" onclick="openTab(event, 'reflexion')">
+                <span>🧠</span> Reflexión Crítica
+            </button>
+            <button class="tab-btn" onclick="openTab(event, 'evaluacion')">
+                <span>✅</span> Evaluación Formativa
+            </button>
+        </nav>
+
+        <!-- CONTENIDO DEL LIENZO DE TRABAJO -->
+        <main class="p-4 md:p-8 flex-1 overflow-y-auto">
+
+            <!-- ===================================================================== -->
+            <!-- SECCIÓN 1: EXPLICACIÓN TEÓRICA Y DOSIFICACIÓN DE LOS 4 MÓDULOS        -->
+            <!-- ===================================================================== -->
+            <section id="teoria" class="tab-content active space-y-8">
+                
+                <!-- Banner Resumen de Unidad -->
+                <div class="bg-white p-5 rounded-xl border-2 border-[#54887D] shadow-sm">
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-gray-200 pb-4 mb-4">
+                        <div>
+                            <span class="badge-oliva mb-1 inline-block">Unidad 1: La Ciencia y Técnicas de Investigación en Ciencias Sociales</span>
+                            <h2 class="text-xl md:text-2xl font-bold text-[#1269A8]">Planificación Didáctica y Dosificación de Evaluación</h2>
+                            <p class="text-sm text-gray-600 mt-1">
+                                <strong>Competencia de Unidad:</strong> Aplica el método y las técnicas de investigación de las ciencias sociales para delimitar un tema, formular objetivos y planificar una investigación con fuentes confiables, de forma crítica y ética.
+                            </p>
+                        </div>
+                        <div class="flex flex-wrap gap-2 shrink-0">
+                            <span class="badge-azul">4 Módulos</span>
+                            <span class="badge-oliva">25 Pts c/u</span>
+                            <span class="badge-amarillo">Total: 100 Pts</span>
+                        </div>
+                    </div>
+
+                    <!-- Leyenda de Modalidades de Trabajo -->
+                    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 text-xs font-semibold text-center">
+                        <div class="p-2 rounded-lg bg-blue-50 text-[#1269A8] border border-blue-200">👤 Trabajo Individual</div>
+                        <div class="p-2 rounded-lg bg-teal-50 text-[#54887D] border border-teal-200">👥 Trabajo en Equipo</div>
+                        <div class="p-2 rounded-lg bg-amber-50 text-amber-800 border border-amber-200">🚀 Proyecto</div>
+                        <div class="p-2 rounded-lg bg-lime-50 text-lime-800 border border-lime-300">🏆 Logro / Integrado</div>
+                        <div class="p-2 rounded-lg bg-purple-50 text-purple-800 border border-purple-200">🔄 Retroalimentación</div>
+                    </div>
+                </div>
+
+                <!-- GRID DE LOS 4 MÓDULOS (25 PTS CADA UNO) -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+                    <!-- MÓDULO 1 -->
+                    <div class="card-montano p-5 flex flex-col justify-between">
+                        <div>
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="badge-azul">MÓDULO 1 • Semanas 1 y 2 (18 Ene - 29 Ene)</span>
+                                <span class="badge-amarillo">25 Puntos</span>
+                            </div>
+                            <h3 class="text-lg font-bold text-[#1269A8] mb-2">La Ciencia Social, Método y Delimitación del Tema</h3>
+                            <p class="text-sm text-gray-700 mb-4 bg-[#F2F5E9] p-3 rounded-lg">
+                                <strong>Contenidos:</strong> La ciencia (ciencias naturales vs. sociales; caso de la viruela); delimitación del tema (lugar, período y contenido); hábito formativo: <em>comenzar con un fin en mente</em>.
+                            </p>
+                            
+                            <!-- Tabla de Actividades Módulo 1 -->
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-sm text-left border-collapse">
+                                    <thead>
+                                        <tr class="bg-[#1269A8] text-white">
+                                            <th class="p-2 rounded-tl-lg">Actividad</th>
+                                            <th class="p-2">Modalidad</th>
+                                            <th class="p-2 text-right rounded-tr-lg">Pts</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-gray-200">
+                                        <tr>
+                                            <td class="p-2 font-medium">1. Lectura activa comentada con preguntas al margen (Folleto págs. 6-10)</td>
+                                            <td class="p-2"><span class="text-xs font-bold text-[#1269A8]">👤 Individual</span></td>
+                                            <td class="p-2 text-right font-bold">5 pts</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="p-2 font-medium">2. Taller de análisis: Temas amplios vs. realistas (técnica de parafraseo)</td>
+                                            <td class="p-2"><span class="text-xs font-bold text-[#54887D]">👥 Equipo</span></td>
+                                            <td class="p-2 text-right font-bold">5 pts</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="p-2 font-medium">3. Ficha manuscrita de delimitación propia (Lugar, Período y Contenido)</td>
+                                            <td class="p-2"><span class="text-xs font-bold text-lime-700">🏆 Logro</span></td>
+                                            <td class="p-2 text-right font-bold">6 pts</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="p-2 font-medium">4. Selección y vinculación disciplinar del tema comunitario del Proyecto</td>
+                                            <td class="p-2"><span class="text-xs font-bold text-amber-700">🚀 Proyecto</span></td>
+                                            <td class="p-2 text-right font-bold">6 pts</td>
+                                        </tr>
+                                        <tr class="bg-purple-50">
+                                            <td class="p-2 font-bold text-purple-900">5. Clínica de Retroalimentación: Defensa oral y ajuste de límites</td>
+                                            <td class="p-2"><span class="text-xs font-bold text-purple-800">🔄 Retroalim.</span></td>
+                                            <td class="p-2 text-right font-bold text-purple-900">3 pts</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="mt-4 pt-2 border-t border-gray-200 flex justify-between items-center text-sm font-bold text-[#54887D]">
+                            <span>Subtotal Módulo 1:</span>
+                            <span>25 / 25 Puntos</span>
+                        </div>
+                    </div>
+
+                    <!-- MÓDULO 2 -->
+                    <div class="card-montano p-5 flex flex-col justify-between">
+                        <div>
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="badge-azul">MÓDULO 2 • Semanas 3 y 4 (01 Feb - 12 Feb)</span>
+                                <span class="badge-amarillo">25 Puntos</span>
+                            </div>
+                            <h3 class="text-lg font-bold text-[#1269A8] mb-2">Formulación de Objetivos (General y Específicos)</h3>
+                            <p class="text-sm text-gray-700 mb-4 bg-[#F2F5E9] p-3 rounded-lg">
+                                <strong>Contenidos:</strong> Estructura de objetivos de investigación (verbo en infinitivo: explicar, identificar, definir); coherencia entre objetivo general y 3 objetivos específicos; hábito: <em>poner primero lo primero</em>.
+                            </p>
+                            
+                            <!-- Tabla de Actividades Módulo 2 -->
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-sm text-left border-collapse">
+                                    <thead>
+                                        <tr class="bg-[#1269A8] text-white">
+                                            <th class="p-2 rounded-tl-lg">Actividad</th>
+                                            <th class="p-2">Modalidad</th>
+                                            <th class="p-2 text-right rounded-tr-lg">Pts</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-gray-200">
+                                        <tr>
+                                            <td class="p-2 font-medium">1. Repertorio de verbos en infinitivo aplicables a Ciencias Sociales</td>
+                                            <td class="p-2"><span class="text-xs font-bold text-[#1269A8]">👤 Individual</span></td>
+                                            <td class="p-2 text-right font-bold">5 pts</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="p-2 font-medium">2. Auditoría cooperativa de objetivos medibles (roles: coordinador, secretario, verificador)</td>
+                                            <td class="p-2"><span class="text-xs font-bold text-[#54887D]">👥 Equipo</span></td>
+                                            <td class="p-2 text-right font-bold">5 pts</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="p-2 font-medium">3. Matriz de coherencia: Delimitación vs. Alcance de objetivos</td>
+                                            <td class="p-2"><span class="text-xs font-bold text-lime-700">🏆 Integrado</span></td>
+                                            <td class="p-2 text-right font-bold">6 pts</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="p-2 font-medium">4. Redacción oficial de 1 Objetivo General y 3 Específicos del Proyecto</td>
+                                            <td class="p-2"><span class="text-xs font-bold text-amber-700">🚀 Proyecto</span></td>
+                                            <td class="p-2 text-right font-bold">6 pts</td>
+                                        </tr>
+                                        <tr class="bg-purple-50">
+                                            <td class="p-2 font-bold text-purple-900">5. Clínica de Retroalimentación: Coevaluación "Dos estrellas y un deseo"</td>
+                                            <td class="p-2"><span class="text-xs font-bold text-purple-800">🔄 Retroalim.</span></td>
+                                            <td class="p-2 text-right font-bold text-purple-900">3 pts</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="mt-4 pt-2 border-t border-gray-200 flex justify-between items-center text-sm font-bold text-[#54887D]">
+                            <span>Subtotal Módulo 2:</span>
+                            <span>25 / 25 Puntos</span>
+                        </div>
+                    </div>
+
+                    <!-- MÓDULO 3 -->
+                    <div class="card-montano p-5 flex flex-col justify-between">
+                        <div>
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="badge-azul">MÓDULO 3 • Semana 5 (15 Feb - 19 Feb)</span>
+                                <span class="badge-amarillo">25 Puntos</span>
+                            </div>
+                            <h3 class="text-lg font-bold text-[#1269A8] mb-2">El Bosquejo Preliminar y Estructura Capitular</h3>
+                            <p class="text-sm text-gray-700 mb-4 bg-[#F2F5E9] p-3 rounded-lg">
+                                <strong>Contenidos:</strong> Partes del bosquejo de investigación (introducción, contenido de al menos 4 capítulos derivados de los objetivos, conclusiones y bibliografía); orden de redacción; hábito: <em>sinergizar</em>.
+                            </p>
+                            
+                            <!-- Tabla de Actividades Módulo 3 -->
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-sm text-left border-collapse">
+                                    <thead>
+                                        <tr class="bg-[#1269A8] text-white">
+                                            <th class="p-2 rounded-tl-lg">Actividad</th>
+                                            <th class="p-2">Modalidad</th>
+                                            <th class="p-2 text-right rounded-tr-lg">Pts</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-gray-200">
+                                        <tr>
+                                            <td class="p-2 font-medium">1. Esquema lógico-secuencial de la arquitectura de una investigación</td>
+                                            <td class="p-2"><span class="text-xs font-bold text-[#1269A8]">👤 Individual</span></td>
+                                            <td class="p-2 text-right font-bold">5 pts</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="p-2 font-medium">2. Reconstrucción colaborativa de índices en equipos de 3</td>
+                                            <td class="p-2"><span class="text-xs font-bold text-[#54887D]">👥 Equipo</span></td>
+                                            <td class="p-2 text-right font-bold">5 pts</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="p-2 font-medium">3. Tabla de correspondencia: Objetivos específicos → Capítulos temáticos</td>
+                                            <td class="p-2"><span class="text-xs font-bold text-lime-700">🏆 Logro</span></td>
+                                            <td class="p-2 text-right font-bold">6 pts</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="p-2 font-medium">4. Diseño del Bosquejo Capitular (Introducción + 4 Capítulos + Conclusiones)</td>
+                                            <td class="p-2"><span class="text-xs font-bold text-amber-700">🚀 Proyecto</span></td>
+                                            <td class="p-2 text-right font-bold">6 pts</td>
+                                        </tr>
+                                        <tr class="bg-purple-50">
+                                            <td class="p-2 font-bold text-purple-900">5. Clínica de Retroalimentación: Revisión cruzada de coherencia capitular</td>
+                                            <td class="p-2"><span class="text-xs font-bold text-purple-800">🔄 Retroalim.</span></td>
+                                            <td class="p-2 text-right font-bold text-purple-900">3 pts</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="mt-4 pt-2 border-t border-gray-200 flex justify-between items-center text-sm font-bold text-[#54887D]">
+                            <span>Subtotal Módulo 3:</span>
+                            <span>25 / 25 Puntos</span>
+                        </div>
+                    </div>
+
+                    <!-- MÓDULO 4 -->
+                    <div class="card-montano p-5 flex flex-col justify-between">
+                        <div>
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="badge-azul">MÓDULO 4 • Semanas 6 y 7 (22 Feb - 05 Mar)</span>
+                                <span class="badge-amarillo">25 Puntos</span>
+                            </div>
+                            <h3 class="text-lg font-bold text-[#1269A8] mb-2">Fuentes Confiables, Citación y Cartel "Plan de Investigación"</h3>
+                            <p class="text-sm text-gray-700 mb-4 bg-[#F2F5E9] p-3 rounded-lg">
+                                <strong>Contenidos:</strong> Búsqueda de datos y centros documentales (archivo, biblioteca, hemeroteca, INE, Banguat, entrevistas); evaluación crítica de fuentes (por qué evitar Wikipedia); referencias bibliográficas y citas al pie; hábito: <em>afilar la sierra</em>.
+                            </p>
+                            
+                            <!-- Tabla de Actividades Módulo 4 -->
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-sm text-left border-collapse">
+                                    <thead>
+                                        <tr class="bg-[#1269A8] text-white">
+                                            <th class="p-2 rounded-tl-lg">Actividad</th>
+                                            <th class="p-2">Modalidad</th>
+                                            <th class="p-2 text-right rounded-tr-lg">Pts</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-gray-200">
+                                        <tr>
+                                            <td class="p-2 font-medium">1. Fichas bibliográficas y citas al pie de libros de la biblioteca</td>
+                                            <td class="p-2"><span class="text-xs font-bold text-[#1269A8]">👤 Individual</span></td>
+                                            <td class="p-2 text-right font-bold">5 pts</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="p-2 font-medium">2. Matriz de confiabilidad de 3 fuentes oficiales (INE, Banguat, archivos)</td>
+                                            <td class="p-2"><span class="text-xs font-bold text-[#54887D]">👥 Equipo</span></td>
+                                            <td class="p-2 text-right font-bold">5 pts</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="p-2 font-medium">3. Producto final: Cartel "Plan de Investigación" y plenaria de 90 segundos</td>
+                                            <td class="p-2"><span class="text-xs font-bold text-amber-700">🚀 Proyecto</span></td>
+                                            <td class="p-2 text-right font-bold">6 pts</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="p-2 font-medium">4. Evaluación sumativa con Lista de Cotejo (mínimo 8 de 10 criterios)</td>
+                                            <td class="p-2"><span class="text-xs font-bold text-lime-700">🏆 Integrado</span></td>
+                                            <td class="p-2 text-right font-bold">6 pts</td>
+                                        </tr>
+                                        <tr class="bg-purple-50">
+                                            <td class="p-2 font-bold text-purple-900">5. Clínica de Retroalimentación: Boleto de salida y metacognición</td>
+                                            <td class="p-2"><span class="text-xs font-bold text-purple-800">🔄 Retroalim.</span></td>
+                                            <td class="p-2 text-right font-bold text-purple-900">3 pts</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="mt-4 pt-2 border-t border-gray-200 flex justify-between items-center text-sm font-bold text-[#54887D]">
+                            <span>Subtotal Módulo 4:</span>
+                            <span>25 / 25 Puntos</span>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- SÍNTESIS TEÓRICA DE LOS TEMAS DE LA UNIDAD -->
+                <div class="bg-white p-6 rounded-xl border border-[#88B5C7] shadow-sm space-y-4">
+                    <h3 class="text-xl font-bold text-[#1269A8] border-b-2 border-[#F7D615] pb-2">
+                        📚 Síntesis Conceptual de la Unidad 1 (Ciencias Sociales - 4o. HS)
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm leading-relaxed">
+                        <div class="p-3 bg-[#F2F5E9] rounded-lg">
+                            <h4 class="font-bold text-[#54887D]">1. La Ciencia Social y la Delimitación del Tema</h4>
+                            <p>Toda investigación social exige acotar un tema amplio a dimensiones manejables mediante <strong>tres criterios obligatorios</strong>: <em>Lugar</em> (espacio geográfico exacto), <em>Período</em> (rango temporal definido) y <em>Contenido</em> (fenómeno específico vinculado a una ciencia social).</p>
+                        </div>
+                        <div class="p-3 bg-[#F2F5E9] rounded-lg">
+                            <h4 class="font-bold text-[#54887D]">2. Objetivos Generales y Específicos</h4>
+                            <p>Se redactan iniciando con un <strong>verbo en infinitivo</strong> (<em>explicar, identificar, definir, analizar</em>). El <strong>Objetivo General</strong> define el alcance global de la investigación, mientras que los <strong>tres Objetivos Específicos</strong> desglosan las etapas concretas para lograrlo.</p>
+                        </div>
+                        <div class="p-3 bg-[#F2F5E9] rounded-lg">
+                            <h4 class="font-bold text-[#54887D]">3. El Bosquejo de Investigación</h4>
+                            <p>Es el esquema lógico del trabajo: contiene <em>Introducción</em> (nota: se redacta al final cuando ya se conoce todo el contenido), al menos <em>cuatro capítulos</em> derivados de los objetivos, <em>Conclusiones</em> y <em>Bibliografía</em>.</p>
+                        </div>
+                        <div class="p-3 bg-[#F2F5E9] rounded-lg">
+                            <h4 class="font-bold text-[#54887D]">4. Fuentes Confiables y Citación Ética</h4>
+                            <p>Se priorizan fuentes verificables como el <strong>INE</strong> (censos), <strong>Banguat</strong> (estadísticas económicas), archivos, hemerotecas y bibliotecas, evitando fuentes editables sin revisión (como Wikipedia). Todo dato ajeno lleva su <strong>cita al pie</strong> y su <strong>referencia bibliográfica</strong>.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ===================================================================== -->
+            <!-- SECCIÓN 2: EJEMPLOS RESUELTOS (5 BÁSICO, 5 INTERMEDIO, 5 AVANZADO)    -->
+            <!-- ===================================================================== -->
+            <section id="ejemplos" class="tab-content space-y-8">
+                <div class="bg-white p-5 rounded-xl border-l-4 border-[#1269A8]">
+                    <h2 class="text-2xl font-bold text-[#1269A8]">Ejemplos Resueltos Paso a Paso</h2>
+                    <p class="text-sm text-gray-600">15 modelos desarrollados progresivamente para planificar investigaciones en Ciencias Sociales.</p>
+                </div>
+
+                <!-- NIVEL BÁSICO -->
+                <div class="space-y-4">
+                    <div class="flex items-center gap-2">
+                        <span class="badge-oliva">Nivel Básico</span>
+                        <h3 class="text-lg font-bold text-[#54887D]">Conceptos Clave y Reglas de Planificación</h3>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="card-montano p-4">
+                            <span class="text-xs font-bold text-[#1269A8]">Ejemplo Básico 1 • Los 3 Criterios de Delimitación</span>
+                            <p class="font-semibold mt-1">Identifica el <strong>lugar, período y contenido</strong> en el tema: <em>"Impacto del comercio informal en el centro histórico de Quetzaltenango durante el año 2026"</em>.</p>
+                            <p class="text-sm text-gray-700 mt-2 bg-[#F2F5E9] p-2.5 rounded">
+                                <strong>Resolución:</strong> <br>
+                                • <strong>Lugar:</strong> Centro histórico de Quetzaltenango.<br>
+                                • <strong>Período:</strong> Año 2026.<br>
+                                • <strong>Contenido:</strong> Impacto del comercio informal (Ciencia Social: Economía/Sociología).
+                            </p>
+                        </div>
+
+                        <div class="card-montano p-4">
+                            <span class="text-xs font-bold text-[#1269A8]">Ejemplo Básico 2 • Verbos en Infinitivo para Objetivos</span>
+                            <p class="font-semibold mt-1">¿Por qué todo objetivo de investigación debe iniciar con un verbo en <strong>infinitivo</strong> (-ar, -er, -ir)?</p>
+                            <p class="text-sm text-gray-700 mt-2 bg-[#F2F5E9] p-2.5 rounded">
+                                <strong>Resolución:</strong> Porque indica una <strong>acción concreta, observable y medible</strong> que el investigador ejecutará (ej. <em>identificar, explicar, definir</em>), evitando expresiones ambiguas como "saber" o "conocer un poco".
+                            </p>
+                        </div>
+
+                        <div class="card-montano p-4">
+                            <span class="text-xs font-bold text-[#1269A8]">Ejemplo Básico 3 • Ciencias Naturales vs. Ciencias Sociales</span>
+                            <p class="font-semibold mt-1">Según el caso de la <em>viruela</em> visto en clase, ¿cómo la abordan las Ciencias Naturales frente a las Ciencias Sociales?</p>
+                            <p class="text-sm text-gray-700 mt-2 bg-[#F2F5E9] p-2.5 rounded">
+                                <strong>Resolución:</strong> Las <em>Ciencias Naturales</em> estudian el virus, los síntomas y la vacuna; las <em>Ciencias Sociales</em> investigan cómo afectó la epidemia a la población, la economía y las políticas de salud pública de una época.
+                            </p>
+                        </div>
+
+                        <div class="card-montano p-4">
+                            <span class="text-xs font-bold text-[#1269A8]">Ejemplo Básico 4 • Centros de Información Documental</span>
+                            <p class="font-semibold mt-1">¿Qué diferencia existe entre una <strong>biblioteca</strong> y una <strong>hemeroteca</strong>?</p>
+                            <p class="text-sm text-gray-700 mt-2 bg-[#F2F5E9] p-2.5 rounded">
+                                <strong>Resolución:</strong> La <em>biblioteca</em> resguarda principalmente libros y obras de consulta general; la <em>hemeroteca</em> se especializa en publicaciones periódicas como diarios, periódicos históricos y revistas.
+                            </p>
+                        </div>
+
+                        <div class="card-montano p-4 md:col-span-2">
+                            <span class="text-xs font-bold text-[#1269A8]">Ejemplo Básico 5 • Orden de Redacción del Informe</span>
+                            <p class="font-semibold mt-1">¿Cuál es la sección del bosquejo que aparece al inicio del documento, pero se <strong>redacta al final</strong> de la investigación?</p>
+                            <p class="text-sm text-gray-700 mt-2 bg-[#F2F5E9] p-2.5 rounded">
+                                <strong>Resolución:</strong> La <strong>Introducción</strong>, porque solo cuando ya se ha redactado todo el contenido y las conclusiones se puede presentar con precisión de qué trata el trabajo, su metodología y sus hallazgos principales.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- NIVEL INTERMEDIO -->
+                <div class="space-y-4">
+                    <div class="flex items-center gap-2">
+                        <span class="badge-azul">Nivel Intermedio</span>
+                        <h3 class="text-lg font-bold text-[#54887D]">Delimitación Práctica, Evaluación de Fuentes y Citación</h3>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="card-montano p-4">
+                            <span class="text-xs font-bold text-[#54887D]">Ejemplo Intermedio 1 • Transformación de Tema Amplio</span>
+                            <p class="font-semibold mt-1">Delimita el tema imposible: <em>"La educación en el mundo"</em> a un tema viable para 4to. Bachillerato en Guatemala.</p>
+                            <p class="text-sm text-gray-700 mt-2 bg-[#F2F5E9] p-2.5 rounded">
+                                <strong>Resolución:</strong> <em>"Uso de plataformas digitales en el aprendizaje de Ciencias Sociales en estudiantes de 4to. Bachillerato de un colegio privado de la Ciudad de Guatemala durante el ciclo 2027"</em>.
+                            </p>
+                        </div>
+
+                        <div class="card-montano p-4">
+                            <span class="text-xs font-bold text-[#54887D]">Ejemplo Intermedio 2 • Justificación de Fuentes Oficiales vs. Wikipedia</span>
+                            <p class="font-semibold mt-1">¿Por qué una investigación sobre indicadores económicos de Guatemala debe citar al <strong>Banguat</strong> o al <strong>INE</strong> y rechazar Wikipedia?</p>
+                            <p class="text-sm text-gray-700 mt-2 bg-[#F2F5E9] p-2.5 rounded">
+                                <strong>Resolución:</strong> Porque el <em>Banco de Guatemala (Banguat)</em> y el <em>Instituto Nacional de Estadística (INE)</em> son instituciones técnicas con censos y registros oficiales verificables; Wikipedia es una enciclopedia abierta editable por cualquier usuario sin respaldo institucional primario.
+                            </p>
+                        </div>
+
+                        <div class="card-montano p-4">
+                            <span class="text-xs font-bold text-[#54887D]">Ejemplo Intermedio 3 • Estructura de Referencia Bibliográfica</span>
+                            <p class="font-semibold mt-1">Ordena los datos de un libro físico para redactar su referencia bibliográfica: <em>Año: 2023 | Título: Metodología de la Investigación Social | Autor: Hernández, Roberto | Editorial: McGraw-Hill</em>.</p>
+                            <p class="text-sm text-gray-700 mt-2 bg-[#F2F5E9] p-2.5 rounded">
+                                <strong>Resolución:</strong> Hernández, R. (2023). <em>Metodología de la Investigación Social</em>. McGraw-Hill.
+                            </p>
+                        </div>
+
+                        <div class="card-montano p-4">
+                            <span class="text-xs font-bold text-[#54887D]">Ejemplo Intermedio 4 • Derivación de Capítulos desde Objetivos</span>
+                            <p class="font-semibold mt-1">Si tu Objetivo Específico 1 es <em>"Identificar las causas históricas de la migración juvenil en el municipio"</em>, ¿cuál debería ser el título del Capítulo 1 de tu bosquejo?</p>
+                            <p class="text-sm text-gray-700 mt-2 bg-[#F2F5E9] p-2.5 rounded">
+                                <strong>Resolución:</strong> <em>Capítulo I: Antecedentes y causas históricas de la migración juvenil en el municipio</em> (mantiene correspondencia directa con el objetivo).
+                            </p>
+                        </div>
+
+                        <div class="card-montano p-4 md:col-span-2">
+                            <span class="text-xs font-bold text-[#54887D]">Ejemplo Intermedio 5 • Roles en el Trabajo Cooperativo</span>
+                            <p class="font-semibold mt-1">En un equipo de 3 integrantes que elabora el cartel "Plan de Investigación", ¿qué responsabilidad cumple el <strong>Verificador de Fuentes</strong>?</p>
+                            <p class="text-sm text-gray-700 mt-2 bg-[#F2F5E9] p-2.5 rounded">
+                                <strong>Resolución:</strong> Audita que las tres fuentes seleccionadas provengan de instituciones confiables (archivos, bibliotecas, INE, entrevistas formales) y verifica que los datos de citación bibliográfica y al pie estén completos y ordenados.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- NIVEL AVANZADO -->
+                <div class="space-y-4">
+                    <div class="flex items-center gap-2">
+                        <span class="badge-amarillo">Nivel Avanzado</span>
+                        <h3 class="text-lg font-bold text-[#54887D]">Diseño Completo de Plan de Investigación Social</h3>
+                    </div>
+
+                    <div class="grid grid-cols-1 gap-4">
+                        <div class="card-montano p-4">
+                            <span class="text-xs font-bold text-[#1269A8]">Ejemplo Avanzado 1 • Planificación Integral (Tema + Objetivos en Cascada)</span>
+                            <p class="font-semibold mt-1">Formula el Objetivo General y tres Objetivos Específicos coherentes para el tema delimitado: <em>"Factores socioeconómicos que influyen en el emprendimiento juvenil en el municipio de Mixco durante 2027"</em>.</p>
+                            <p class="text-sm text-gray-700 mt-2 bg-[#F2F5E9] p-3 rounded">
+                                <strong>Resolución Integral:</strong> <br>
+                                • <strong>Objetivo General:</strong> Analizar los factores socioeconómicos que influyen en el emprendimiento juvenil en el municipio de Mixco durante el año 2027.<br>
+                                • <strong>Objetivo Específico 1:</strong> Identificar el perfil demográfico y educativo de los jóvenes emprendedores de Mixco.<br>
+                                • <strong>Objetivo Específico 2:</strong> Describir las principales fuentes de financiamiento y barreras económicas que enfrentan.<br>
+                                • <strong>Objetivo Específico 3:</strong> Explicar el impacto de los emprendimientos juveniles en la economía familiar local.
+                            </p>
+                        </div>
+
+                        <div class="card-montano p-4">
+                            <span class="text-xs font-bold text-[#1269A8]">Ejemplo Avanzado 2 • Bosquejo Capitular Completo (Mínimo 4 Capítulos)</span>
+                            <p class="font-semibold mt-1">Elabora el bosquejo completo de 4 capítulos derivado del ejemplo anterior.</p>
+                            <p class="text-sm text-gray-700 mt-2 bg-[#F2F5E9] p-3 rounded">
+                                <strong>Resolución Integral:</strong> <br>
+                                • <strong>Introducción</strong><br>
+                                • <strong>Capítulo I:</strong> Marco conceptual del emprendimiento juvenil y contexto de Mixco.<br>
+                                • <strong>Capítulo II:</strong> Perfil demográfico y formación académica de los jóvenes emprendedores.<br>
+                                • <strong>Capítulo III:</strong> Acceso a capital, costos operativos y obstáculos económicos.<br>
+                                • <strong>Capítulo IV:</strong> Contribución al ingreso familiar y sostenibilidad de los negocios.<br>
+                                • <strong>Conclusiones</strong> &nbsp;|&nbsp; <strong>Bibliografía</strong>
+                            </p>
+                        </div>
+
+                        <div class="card-montano p-4">
+                            <span class="text-xs font-bold text-[#1269A8]">Ejemplo Avanzado 3 • Matriz de Justificación de 3 Fuentes Confiables</span>
+                            <p class="font-semibold mt-1">Construye la tabla de fuentes confiables para la investigación sobre emprendimiento juvenil en Mixco.</p>
+                            <p class="text-sm text-gray-700 mt-2 bg-[#F2F5E9] p-3 rounded">
+                                <strong>Resolución Integral:</strong> <br>
+                                1) <strong>Instituto Nacional de Estadística (INE) — Encuesta Nacional de Empleo e Ingresos:</strong> Datos oficiales y censales sobre ocupación juvenil en el departamento de Guatemala.<br>
+                                2) <strong>Ministerio de Economía (MINECO) — Política Nacional de Emprendimiento:</strong> Documento institucional que define marcos legales y programas de apoyo a MIPYMES.<br>
+                                3) <strong>Entrevistas estructuradas a 15 jóvenes emprendedores de Mixco:</strong> Fuente primaria directa que aporta testimonios reales sobre barreras y logros locales.
+                            </p>
+                        </div>
+
+                        <div class="card-montano p-4">
+                            <span class="text-xs font-bold text-[#1269A8]">Ejemplo Avanzado 4 • Cita al Pie vs. Referencia Bibliográfica</span>
+                            <p class="font-semibold mt-1">Explica la diferencia funcional entre una <strong>cita al pie de página</strong> y una <strong>referencia en la bibliografía final</strong>, redactando un ejemplo de cita al pie.</p>
+                            <p class="text-sm text-gray-700 mt-2 bg-[#F2F5E9] p-3 rounded">
+                                <strong>Resolución Integral:</strong> La <em>cita al pie</em> aparece en la parte inferior de la misma página donde se usa un dato o frase ajena, indicando la página exacta; la <em>bibliografía</em> reúne al final del informe todas las obras consultadas ordenadas alfabéticamente.<br>
+                                <strong>Ejemplo al pie:</strong> <sup>1</sup> Roberto Hernández Sampieri, <em>Metodología de la Investigación</em> (México: McGraw-Hill, 2023), p. 42.
+                            </p>
+                        </div>
+
+                        <div class="card-montano p-4">
+                            <span class="text-xs font-bold text-[#1269A8]">Ejemplo Avanzado 5 • Integración de Hábitos Formativos en la Investigación</span>
+                            <p class="font-semibold mt-1">¿Cómo se aplican los hábitos <em>"Comenzar con un fin en mente"</em> y <em>"Buscar primero entender, luego ser entendido"</em> en las fases de trabajo personal y cooperativo?</p>
+                            <p class="text-sm text-gray-700 mt-2 bg-[#F2F5E9] p-3 rounded">
+                                <strong>Resolución Integral:</strong> <em>"Comenzar con un fin en mente"</em> guía la delimitación clara y la redacción de objetivos antes de buscar datos a ciegas; <em>"Buscar primero entender"</em> se practica en el equipo cuando cada integrante escucha y parafrasea el tema de sus compañeros antes de criticar o elegir la propuesta grupal.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ===================================================================== -->
+            <!-- SECCIÓN 3: EJERCICIOS PRÁCTICOS (15 EJERCICIOS PARA EL ESTUDIANTE)    -->
+            <!-- ===================================================================== -->
+            <section id="ejercicios" class="tab-content space-y-8">
+                <div class="bg-white p-5 rounded-xl border-l-4 border-[#54887D] flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+                    <div>
+                        <h2 class="text-2xl font-bold text-[#1269A8]">Taller de Ejercicios Prácticos</h2>
+                        <p class="text-sm text-gray-600">Resuelve cada actividad en tu cuaderno o pizarra y comprueba tus respuestas paso a paso.</p>
+                    </div>
+                    <span class="badge-oliva">15 Ejercicios Graduados</span>
+                </div>
+
+                <!-- BLOQUE BÁSICO (1 - 5) -->
+                <div class="space-y-3">
+                    <h3 class="text-lg font-bold text-[#1269A8] border-b border-gray-300 pb-1">🟢 Nivel Básico (Ejercicios 1 al 5)</h3>
+                    
+                    <div class="card-ejercicio p-4">
+                        <p class="font-bold text-[#1269A8]">Ejercicio 1 (Elementos de Delimitación):</p>
+                        <p class="text-sm mt-1">¿Cuáles son los <strong>tres elementos obligatorios</strong> que debe contener todo tema delimitado de investigación social?</p>
+                        <button class="btn-solucion mt-3 text-xs" onclick="toggleSolucion('sol-cs4h1', this)">👁️ Mostrar solución</button>
+                        <div id="sol-cs4h1" class="caja-solucion text-sm">
+                            <strong>Solución:</strong> 1) <strong>Lugar</strong> (espacio geográfico), 2) <strong>Período</strong> (tiempo o año), y 3) <strong>Contenido</strong> (fenómeno o problema específico a estudiar).
+                        </div>
+                    </div>
+
+                    <div class="card-ejercicio p-4">
+                        <p class="font-bold text-[#1269A8]">Ejercicio 2 (Detección de Temas No Delimitados):</p>
+                        <p class="text-sm mt-1">¿Por qué el enunciado <em>"Voy a investigar la historia de Guatemala"</em> es inviable para un trabajo escolar bimestral?</p>
+                        <button class="btn-solucion mt-3 text-xs" onclick="toggleSolucion('sol-cs4h2', this)">👁️ Mostrar solución</button>
+                        <div id="sol-cs4h2" class="caja-solucion text-sm">
+                            <strong>Solución:</strong> Porque es demasiado amplio y abarca miles de años, múltiples regiones y decenas de temas políticos, económicos y sociales; requeriría años de trabajo y cientos de libros.
+                        </div>
+                    </div>
+
+                    <div class="card-ejercicio p-4">
+                        <p class="font-bold text-[#1269A8]">Ejercicio 3 (Cantidad de Objetivos):</p>
+                        <p class="text-sm mt-1">Según los criterios de logro de la Unidad 1, ¿cuántos objetivos generales y cuántos objetivos específicos debe redactar el estudiante para su plan?</p>
+                        <button class="btn-solucion mt-3 text-xs" onclick="toggleSolucion('sol-cs4h3', this)">👁️ Mostrar solución</button>
+                        <div id="sol-cs4h3" class="caja-solucion text-sm">
+                            <strong>Solución:</strong> <strong>1 Objetivo General</strong> y al menos <strong>3 Objetivos Específicos</strong> coherentes con el general.
+                        </div>
+                    </div>
+
+                    <div class="card-ejercicio p-4">
+                        <p class="font-bold text-[#1269A8]">Ejercicio 4 (Mínimo de Capítulos en el Bosquejo):</p>
+                        <p class="text-sm mt-1">¿Cuántos capítulos de desarrollo debe contener como mínimo el bosquejo preliminar de investigación?</p>
+                        <button class="btn-solucion mt-3 text-xs" onclick="toggleSolucion('sol-cs4h4', this)">👁️ Mostrar solución</button>
+                        <div id="sol-cs4h4" class="caja-solucion text-sm">
+                            <strong>Solución:</strong> Al menos <strong>4 capítulos</strong>, además de la introducción, conclusiones y bibliografía.
+                        </div>
+                    </div>
+
+                    <div class="card-ejercicio p-4">
+                        <p class="font-bold text-[#1269A8]">Ejercicio 5 (Identificación de Fuentes Oficiales):</p>
+                        <p class="text-sm mt-1">¿Qué institución oficial de Guatemala consultarías para obtener datos estadísticos de población y censos de vivienda?</p>
+                        <button class="btn-solucion mt-3 text-xs" onclick="toggleSolucion('sol-cs4h5', this)">👁️ Mostrar solución</button>
+                        <div id="sol-cs4h5" class="caja-solucion text-sm">
+                            <strong>Solución:</strong> El <strong>INE</strong> (Instituto Nacional de Estadística).
+                        </div>
+                    </div>
+                </div>
+
+                <!-- BLOQUE INTERMEDIO (6 - 10) -->
+                <div class="space-y-3">
+                    <h3 class="text-lg font-bold text-[#1269A8] border-b border-gray-300 pb-1">🟡 Nivel Intermedio (Ejercicios 6 al 10)</h3>
+
+                    <div class="card-ejercicio p-4">
+                        <p class="font-bold text-[#1269A8]">Ejercicio 6 (Corrección de Verbos en Objetivos):</p>
+                        <p class="text-sm mt-1">Corrige el siguiente objetivo para que inicie con un verbo en infinitivo preciso y medible: <em>"Queremos ver cómo afecta el tráfico a los alumnos."</em></p>
+                        <button class="btn-solucion mt-3 text-xs" onclick="toggleSolucion('sol-cs4h6', this)">👁️ Mostrar solución</button>
+                        <div id="sol-cs4h6" class="caja-solucion text-sm">
+                            <strong>Solución Modelo:</strong> <em>"<strong>Identificar</strong> los efectos del congestionamiento vehicular en la puntualidad y rendimiento de los estudiantes de 4to. Bachillerato durante el primer trimestre de 2027."</em>
+                        </div>
+                    </div>
+
+                    <div class="card-ejercicio p-4">
+                        <p class="font-bold text-[#1269A8]">Ejercicio 7 (Ciencia Social Asociada):</p>
+                        <p class="text-sm mt-1">Asocia cada tema delimitado con su principal ciencia social: <br>a) Evolución de las elecciones municipales en Antigua Guatemala (2000-2024). <br>b) Tradiciones textiles en San Juan Sacatepéquez en la actualidad.</p>
+                        <button class="btn-solucion mt-3 text-xs" onclick="toggleSolucion('sol-cs4h7', this)">👁️ Mostrar solución</button>
+                        <div id="sol-cs4h7" class="caja-solucion text-sm">
+                            <strong>Solución:</strong> a) <strong>Ciencia Política / Historia</strong> | b) <strong>Antropología Cultural / Sociología</strong>.
+                        </div>
+                    </div>
+
+                    <div class="card-ejercicio p-4">
+                        <p class="font-bold text-[#1269A8]">Ejercicio 8 (Clasificación de Fuentes):</p>
+                        <p class="text-sm mt-1">Clasifica las siguientes fuentes según su tipo (<em>datos oficiales, fuente primaria oral, fuente hemerográfica</em>): <br>1) Entrevista a un líder comunitario &nbsp;|&nbsp; 2) Informe del Banguat &nbsp;|&nbsp; 3) Artículo de prensa de 1996.</p>
+                        <button class="btn-solucion mt-3 text-xs" onclick="toggleSolucion('sol-cs4h8', this)">👁️ Mostrar solución</button>
+                        <div id="sol-cs4h8" class="caja-solucion text-sm">
+                            <strong>Solución:</strong> 1) Fuente primaria oral | 2) Datos oficiales | 3) Fuente hemerográfica.
+                        </div>
+                    </div>
+
+                    <div class="card-ejercicio p-4">
+                        <p class="font-bold text-[#1269A8]">Ejercicio 9 (Técnica de Parafraseo en Equipo):</p>
+                        <p class="text-sm mt-1">En el trabajo cooperativo, ¿por qué se exige que los compañeros <strong>parafraseen</strong> la propuesta de quien expone antes de emitir opiniones?</p>
+                        <button class="btn-solucion mt-3 text-xs" onclick="toggleSolucion('sol-cs4h9', this)">👁️ Mostrar solución</button>
+                        <div id="sol-cs4h9" class="caja-solucion text-sm">
+                            <strong>Solución:</strong> Para practicar el hábito de <em>"buscar primero entender"</em>, garantizando que el equipo comprendió realmente la idea del compañero antes de evaluarla o mejorarla.
+                        </div>
+                    </div>
+
+                    <div class="card-ejercicio p-4">
+                        <p class="font-bold text-[#1269A8]">Ejercicio 10 (Prevención del Plagio / Copy-Paste):</p>
+                        <p class="text-sm mt-1">Menciona <strong>dos estrategias metodológicas</strong> aplicadas en clase para evitar el copy-paste y garantizar la autoría propia del estudiante.</p>
+                        <button class="btn-solucion mt-3 text-xs" onclick="toggleSolucion('sol-cs4h10', this)">👁️ Mostrar solución</button>
+                        <div id="sol-cs4h10" class="caja-solucion text-sm">
+                            <strong>Solución:</strong> 1) Elaboración manuscrita en el cuaderno sobre un tema propio del entorno; 2) Justificación oral individual ante el docente sobre las decisiones tomadas y citación rigurosa de fuentes.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- BLOQUE AVANZADO (11 - 15) -->
+                <div class="space-y-3">
+                    <h3 class="text-lg font-bold text-[#1269A8] border-b border-gray-300 pb-1">🔴 Nivel Avanzado (Ejercicios 11 al 15)</h3>
+
+                    <div class="card-ejercicio p-4">
+                        <p class="font-bold text-[#1269A8]">Ejercicio 11 (Delimitación Completa a partir de Problemática Comunitaria):</p>
+                        <p class="text-sm mt-1">Toma la problemática general <em>"Contaminación por basura"</em> y redáctala como un tema delimitado cumpliendo los 3 criterios (lugar, período y contenido).</p>
+                        <button class="btn-solucion mt-3 text-xs" onclick="toggleSolucion('sol-cs4h11', this)">👁️ Mostrar solución</button>
+                        <div id="sol-cs4h11" class="caja-solucion text-sm">
+                            <strong>Solución Modelo:</strong> <em>"Hábitos de clasificación de desechos sólidos en los hogares de la zona 10 de la Ciudad de Guatemala durante el primer semestre de 2027"</em>. (Lugar: zona 10, Ciudad de Guatemala; Período: primer semestre 2027; Contenido: hábitos de clasificación de desechos).
+                        </div>
+                    </div>
+
+                    <div class="card-ejercicio p-4">
+                        <p class="font-bold text-[#1269A8]">Ejercicio 12 (Redacción de Referencia Bibliográfica y Cita al Pie):</p>
+                        <p class="text-sm mt-1">Con los datos: <em>Autor: Severo Martínez Peláez | Obra: La patria del criollo | Editorial: Fondo de Cultura Económica | Año: 2011 | Página citada: 85</em>, redacta la referencia bibliográfica.</p>
+                        <button class="btn-solucion mt-3 text-xs" onclick="toggleSolucion('sol-cs4h12', this)">👁️ Mostrar solución</button>
+                        <div id="sol-cs4h12" class="caja-solucion text-sm">
+                            <strong>Solución:</strong> Martínez Peláez, S. (2011). <em>La patria del criollo</em>. Fondo de Cultura Económica. (Y en la cita al pie se especificaría: p. 85).
+                        </div>
+                    </div>
+
+                    <div class="card-ejercicio p-4">
+                        <p class="font-bold text-[#1269A8]">Ejercicio 13 (Coherencia entre Objetivos y Capítulos):</p>
+                        <p class="text-sm mt-1">Un estudiante redacta 3 objetivos específicos, pero en su bosquejo propone 4 capítulos totalmente distintos que hablan de otros temas. ¿Qué criterio de la lista de cotejo incumple y cómo debe corregirlo?</p>
+                        <button class="btn-solucion mt-3 text-xs" onclick="toggleSolucion('sol-cs4h13', this)">👁️ Mostrar solución</button>
+                        <div id="sol-cs4h13" class="caja-solucion text-sm">
+                            <strong>Solución:</strong> Incumple el criterio: <em>"Presenta al menos cuatro capítulos derivados de los objetivos"</em>. Debe reestructurar los títulos de los capítulos para que respondan directamente a cada objetivo específico y al marco contextual del tema.
+                        </div>
+                    </div>
+
+                    <div class="card-ejercicio p-4">
+                        <p class="font-bold text-[#1269A8]">Ejercicio 14 (Evaluación Crítica de Confiabilidad):</p>
+                        <p class="text-sm mt-1">Un equipo incluye en su cartel las siguientes 3 fuentes: <em>1) Un post de TikTok sin autor, 2) Anuario Estadístico del INE, 3) Entrevista a la directora del centro de salud local</em>. Identifica cuál fuente debe reemplazarse y propón un sustituto válido.</p>
+                        <button class="btn-solucion mt-3 text-xs" onclick="toggleSolucion('sol-cs4h14', this)">👁️ Mostrar solución</button>
+                        <div id="sol-cs4h14" class="caja-solucion text-sm">
+                            <strong>Solución:</strong> Debe reemplazarse el <em>post de TikTok sin autor</em> porque carece de rigor metodológico y verificación. Puede sustituirse por un informe oficial del <strong>Ministerio de Salud Pública y Asistencia Social (MSPAS)</strong> o un artículo de revista académica en biblioteca.
+                        </div>
+                    </div>
+
+                    <div class="card-ejercicio p-4">
+                        <p class="font-bold text-[#1269A8]">Ejercicio 15 (Autoevaluación con Lista de Cotejo):</p>
+                        <p class="text-sm mt-1">Si un estudiante cumple 7 de los 10 criterios de la lista de cotejo del plan diario, ¿alcanzó el logro esperado? Justifica.</p>
+                        <button class="btn-solucion mt-3 text-xs" onclick="toggleSolucion('sol-cs4h15', this)">👁️ Mostrar solución</button>
+                        <div id="sol-cs4h15" class="caja-solucion text-sm">
+                            <strong>Solución:</strong> <strong>No lo alcanzó todavía</strong> ("Logro por alcanzar"), ya que el estándar observable establece cumplir como mínimo <strong>8 de los 10 criterios</strong>. Debe revisar los 3 criterios faltantes y mejorarlos.
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ===================================================================== -->
+            <!-- SECCIÓN 4: PREGUNTAS DE REFLEXIÓN CRÍTICA                             -->
+            <!-- ===================================================================== -->
+            <section id="reflexion" class="tab-content space-y-6">
+                <div class="bg-white p-6 rounded-xl border-l-4 border-[#F7D615] shadow-sm">
+                    <h2 class="text-2xl font-bold text-[#1269A8]">Preguntas de Reflexión Crítica y Pensamiento Lógico</h2>
+                    <p class="text-sm text-gray-600 mt-1">Cuestionamientos abiertos para plenarias, boletos de salida y análisis metacognitivo en Ciencias Sociales.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="card-montano p-5 space-y-3">
+                        <span class="badge-azul">1. Ética en la Investigación Social</span>
+                        <h3 class="text-lg font-bold text-[#1269A8]">¿Por qué citar fuentes es un acto de honestidad intelectual?</h3>
+                        <p class="text-sm text-gray-700 leading-relaxed">
+                            Cuando copiamos información sin dar crédito a su autor o usamos datos sin verificar su origen, cometemos plagio y debilitamos nuestra investigación. Reflexiona: ¿Cómo fortalece tu credibilidad como estudiante de 4o. HS presentar fuentes oficiales y citas al pie bien construidas?
+                        </p>
+                    </div>
+
+                    <div class="card-montano p-5 space-y-3">
+                        <span class="badge-oliva">2. El Arte de Delimitar</span>
+                        <h3 class="text-lg font-bold text-[#1269A8]">¿Por qué investigar "menos" permite profundizar "más"?</h3>
+                        <p class="text-sm text-gray-700 leading-relaxed">
+                            Muchos principiantes creen que un tema gigantesco hace que su trabajo sea mejor, pero terminan haciendo un resumen superficial. Analiza cómo la delimitación en lugar, período y contenido permite descubrir causas reales y comprender mejor los fenómenos sociales.
+                        </p>
+                    </div>
+
+                    <div class="card-montano p-5 space-y-3">
+                        <span class="badge-azul">3. Sinergia y Trabajo Cooperativo</span>
+                        <h3 class="text-lg font-bold text-[#1269A8]">Equipos por sorteo vs. equipos por afinidad</h3>
+                        <p class="text-sm text-gray-700 leading-relaxed">
+                            En la secuencia didáctica los equipos de 3 se forman mediante conteo (1-2-3) y con roles definidos (coordinador, secretario, verificador). ¿De qué manera trabajar con compañeros distintos te prepara para los retos universitarios y ciudadanos reales?
+                        </p>
+                    </div>
+
+                    <div class="card-montano p-5 space-y-3">
+                        <span class="badge-oliva">4. Metacognición (Afilar la Sierra)</span>
+                        <h3 class="text-lg font-bold text-[#1269A8]">¿Qué parte del trabajo se escribe al final y qué hábito debo afilar?</h3>
+                        <p class="text-sm text-gray-700 leading-relaxed">
+                            Retomando el boleto de salida de la clase: ¿Por qué es tan importante detenerse al final de cada módulo para evaluar qué hábitos nos ayudaron (ser proactivo, poner primero lo primero) y cuáles necesitamos perfeccionar?
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ===================================================================== -->
+            <!-- SECCIÓN 5: EVALUACIÓN FORMATIVA CON SOLUCIONES OCULTAS                 -->
+            <!-- ===================================================================== -->
+            <section id="evaluacion" class="tab-content space-y-6">
+                <div class="bg-white p-5 rounded-xl border-2 border-[#1269A8] flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                    <div>
+                        <h2 class="text-2xl font-bold text-[#1269A8]">Evaluación Formativa de Comprobación (Unidad 1)</h2>
+                        <p class="text-sm text-gray-600">Basada en la Lista de Cotejo del Plan de Investigación. Resuelve cada reactivo y verifica su solución.</p>
+                    </div>
+                    <span class="badge-amarillo">5 Reactivos Integradores</span>
+                </div>
+
+                <div class="space-y-4">
+                    <!-- REACTIVO 1 -->
+                    <div class="card-ejercicio p-5">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="badge-azul">Reactivo 1 • Delimitación en Lugar, Período y Contenido</span>
+                            <span class="text-xs font-bold text-[#54887D]">Valor sugerido: 20%</span>
+                        </div>
+                        <p class="font-semibold text-gray-800">Un estudiante propone investigar: <em>"La economía de América Latina"</em>. (a) Evalúa por qué no cumple el criterio de delimitación. (b) Reescríbelo delimitado a un municipio de Guatemala, un año específico y un fenómeno económico concreto.</p>
+                        <button class="btn-solucion mt-2 text-sm" onclick="toggleSolucion('sol-cs4heval1', this)">
+                            👁️ Mostrar solución
+                        </button>
+                        <div id="sol-cs4heval1" class="caja-solucion text-sm space-y-1">
+                            <p><strong>a) Evaluación:</strong> Carece de límites geográficos manejables (abarca más de 20 países), no define un período temporal y el contenido ("la economía") es excesivamente genérico.</p>
+                            <p><strong>b) Tema delimitado modelo:</strong> <em>"Impacto de las remesas familiares en el comercio local del municipio de San Pedro Sacatepéquez, San Marcos, durante el año 2027"</em>.</p>
+                        </div>
+                    </div>
+
+                    <!-- REACTIVO 2 -->
+                    <div class="card-ejercicio p-5">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="badge-azul">Reactivo 2 • Objetivos General y Específicos</span>
+                            <span class="text-xs font-bold text-[#54887D]">Valor sugerido: 20%</span>
+                        </div>
+                        <p class="font-semibold text-gray-800">Para el tema delimitado en el Reactivo 1, redacta <strong>1 Objetivo General</strong> y <strong>3 Objetivos Específicos</strong> iniciando con verbos en infinitivo medibles.</p>
+                        <button class="btn-solucion mt-2 text-sm" onclick="toggleSolucion('sol-cs4heval2', this)">
+                            👁️ Mostrar solución
+                        </button>
+                        <div id="sol-cs4heval2" class="caja-solucion text-sm space-y-1">
+                            <p><strong>Objetivo General:</strong> Explicar el impacto de las remesas familiares en el desarrollo del comercio local de San Pedro Sacatepéquez, San Marcos, durante 2027.</p>
+                            <p><strong>Objetivos Específicos:</strong> <br>
+                            1) Identificar el volumen promedio de remesas recibidas en el municipio según datos del Banguat.<br>
+                            2) Clasificar los principales rubros comerciales impulsados por el consumo de familias receptoras.<br>
+                            3) Analizar la dependencia económica de los hogares respecto a estos ingresos externos.</p>
+                        </div>
+                    </div>
+
+                    <!-- REACTIVO 3 -->
+                    <div class="card-ejercicio p-5">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="badge-azul">Reactivo 3 • Bosquejo Capitular (Mínimo 4 Capítulos)</span>
+                            <span class="text-xs font-bold text-[#54887D]">Valor sugerido: 20%</span>
+                        </div>
+                        <p class="font-semibold text-gray-800">Estructura el esquema completo del <strong>Bosquejo de Investigación</strong> incluyendo sus secciones preliminares, 4 capítulos de desarrollo y secciones finales.</p>
+                        <button class="btn-solucion mt-2 text-sm" onclick="toggleSolucion('sol-cs4heval3', this)">
+                            👁️ Mostrar solución
+                        </button>
+                        <div id="sol-cs4heval3" class="caja-solucion text-sm space-y-1">
+                            <p class="bg-[#F2F5E9] p-2.5 rounded">
+                                1. <strong>Introducción</strong> (se redacta al final)<br>
+                                2. <strong>Capítulo I:</strong> Contexto socioeconómico y migratorio de San Pedro Sacatepéquez<br>
+                                3. <strong>Capítulo II:</strong> Flujo y comportamiento de las remesas familiares en 2027<br>
+                                4. <strong>Capítulo III:</strong> Dinámica del comercio local y sectores beneficiados<br>
+                                5. <strong>Capítulo IV:</strong> Efectos económicos y desafíos de sostenibilidad familiar<br>
+                                6. <strong>Conclusiones</strong><br>
+                                7. <strong>Bibliografía</strong>
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- REACTIVO 4 -->
+                    <div class="card-ejercicio p-5">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="badge-azul">Reactivo 4 • Tabla de Fuentes Confiables</span>
+                            <span class="text-xs font-bold text-[#54887D]">Valor sugerido: 20%</span>
+                        </div>
+                        <p class="font-semibold text-gray-800">Completa la matriz de confiabilidad indicando el <strong>tipo de fuente</strong> y <strong>por qué es confiable</strong> para: (a) <em>Banco de Guatemala (Banguat)</em> y (b) <em>Hemeroteca Nacional</em>.</p>
+                        <button class="btn-solucion mt-2 text-sm" onclick="toggleSolucion('sol-cs4heval4', this)">
+                            👁️ Mostrar solución
+                        </button>
+                        <div id="sol-cs4heval4" class="caja-solucion text-sm space-y-1">
+                            <p><strong>a) Banco de Guatemala (Banguat):</strong> <em>Tipo:</em> Datos oficiales macroeconómicos. <em>Confiabilidad:</em> Es la banca central del Estado encargada de registrar oficialmente el ingreso de divisas y remesas familiares con rigor técnico.</p>
+                            <p><strong>b) Hemeroteca Nacional:</strong> <em>Tipo:</em> Archivo documental y hemerográfico. <em>Confiabilidad:</em> Conserva ediciones originales de periódicos y revistas históricas verificables con fecha y autoría.</p>
+                        </div>
+                    </div>
+
+                    <!-- REACTIVO 5 -->
+                    <div class="card-ejercicio p-5">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="badge-azul">Reactivo 5 • Referencia Bibliográfica y Cita al Pie</span>
+                            <span class="text-xs font-bold text-[#54887D]">Valor sugerido: 20%</span>
+                        </div>
+                        <p class="font-semibold text-gray-800">Explica cuál es la función de incluir una <strong>cita al pie</strong> en el desarrollo de un capítulo y redacta una referencia bibliográfica con los datos: <em>Autor: Edelberto Torres-Rivas | Título: Interpretación del desarrollo social centroamericano | Editorial: EDUCA | Año: 1989</em>.</p>
+                        <button class="btn-solucion mt-2 text-sm" onclick="toggleSolucion('sol-cs4heval5', this)">
+                            👁️ Mostrar solución
+                        </button>
+                        <div id="sol-cs4heval5" class="caja-solucion text-sm space-y-1">
+                            <p><strong>Función de la cita al pie:</strong> Respaldar una afirmación o cita textual en la misma página donde se menciona, permitiendo al lector verificar la fuente exacta sin interrumpir la lectura.</p>
+                            <p><strong>Referencia bibliográfica:</strong> Torres-Rivas, E. (1989). <em>Interpretación del desarrollo social centroamericano</em>. EDUCA.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+
+        <!-- PIE DE PIZARRA INSTITUCIONAL -->
+        <footer class="bg-white border-t border-gray-200 px-6 py-3 text-xs text-gray-500 flex flex-col sm:flex-row justify-between items-center gap-2">
+            <span><strong>Colegio Montano</strong> • Plataforma Educativa Canvas</span>
+            <span>Docente: Stephany Godoy • Ciencias Sociales: La Ciencia y Técnicas de Investigación (4o. HS)</span>
+        </footer>
+
+    </div>
+
+    <!-- LÓGICA INTERACTIVA (PESTAÑAS, SOLUCIONES Y FULLSCREEN API) -->
+    <script>
+        /**
+         * Cambia dinámicamente entre las pestañas horizontales de la pizarra.
+         * @param {Event} evt - Evento de clic del botón.
+         * @param {string} tabId - ID de la sección a mostrar.
+         */
+        function openTab(evt, tabId) {
+            const tabContents = document.getElementsByClassName("tab-content");
+            for (let i = 0; i < tabContents.length; i++) {
+                tabContents[i].classList.remove("active");
+            }
+
+            const tabButtons = document.getElementsByClassName("tab-btn");
+            for (let i = 0; i < tabButtons.length; i++) {
+                tabButtons[i].classList.remove("active");
+            }
+
+            document.getElementById(tabId).classList.add("active");
+            evt.currentTarget.classList.add("active");
+        }
+
+        /**
+         * Alterna la visibilidad de las cajas de solución paso a paso.
+         * @param {string} idSolucion - ID del contenedor de la solución.
+         * @param {HTMLElement} btn - Botón presionado para actualizar su etiqueta.
+         */
+        function toggleSolucion(idSolucion, btn) {
+            const caja = document.getElementById(idSolucion);
+            const estaVisible = caja.classList.contains("visible");
+
+            if (estaVisible) {
+                caja.classList.remove("visible");
+                btn.innerHTML = "👁️ Mostrar solución";
+                btn.style.backgroundColor = "#1269A8";
+            } else {
+                caja.classList.add("visible");
+                btn.innerHTML = "🙈 Ocultar solución";
+                btn.style.backgroundColor = "#54887D";
+            }
+        }
+
+        /**
+         * Activa o desactiva el modo pantalla completa usando Fullscreen API.
+         */
+        function toggleFullscreen() {
+            const fsText = document.getElementById("fsText");
+            const fsIcon = document.getElementById("fsIcon");
+
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().then(() => {
+                    fsText.textContent = "Salir de pantalla completa";
+                    fsIcon.textContent = "✖";
+                }).catch((err) => {
+                    console.warn("No se pudo activar pantalla completa:", err.message);
+                });
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen().then(() => {
+                        fsText.textContent = "Pantalla completa";
+                        fsIcon.textContent = "⛶";
+                    });
+                }
+            }
+        }
+
+        // Sincronizar texto del botón si el usuario sale con la tecla ESC
+        document.addEventListener("fullscreenchange", () => {
+            const fsText = document.getElementById("fsText");
+            const fsIcon = document.getElementById("fsIcon");
+            if (!document.fullscreenElement) {
+                fsText.textContent = "Pantalla completa";
+                fsIcon.textContent = "⛶";
+            }
+        });
+    </script>
+</body>
+</html>
